@@ -1,0 +1,9 @@
+Flask
+Flask-Cors
+flask_restx
+Flask-Caching
+ipython
+psycopg2
+SQLAlchemy
+Flask-SQLAlchemy
+pytest

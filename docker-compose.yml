@@ -1,0 +1,40 @@
+version: "3.3"
+
+services:
+  flask:
+    build:
+      context: app/
+      dockerfile: app.Dockerfile
+    command: python3.9 main.py
+    working_dir: /app
+    environment:
+      - APPLICATION_SETTINGS=config/test.cfg
+    volumes:
+      - ./app/:/app/
+    links:
+      - database
+    ports:
+      - 5008:5008
+
+  database:
+    image: postgres:11.5-alpine
+    volumes:
+      - "db:/var/lib/postgresql/data"
+      - ./:/app
+    working_dir: /app
+    expose:
+      - 5432
+    container_name: "borg_test_host"
+    environment:
+      - POSTGRES_DB=app
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_HOST=borg_test_host
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U 'postgres' -d postgres"]
+      timeout: 10s
+      interval: 20s
+      retries: 3
+
+volumes:
+  db:
